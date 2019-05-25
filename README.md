@@ -48,12 +48,18 @@ Create playbook:
 - hosts: wireguard_gateway
   tasks:
     - include_role: 
-        name: ansible-role-wireguard
+        name: kacperzuk.ansible_role_wireguard
 
 - hosts: wireguard_clients
   tasks:
     - include_role: 
-        name: ansible-role-wireguard
+        name: kacperzuk.ansible_role_wireguard
+```
+
+Install role:
+
+```
+ansible-galaxy install kacperzuk.ansible_role_wireguard
 ```
 
 Run playbook:
