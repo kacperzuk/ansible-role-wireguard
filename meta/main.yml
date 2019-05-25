@@ -11,7 +11,8 @@ galaxy_info:
   galaxy_tags:
     - wireguard
     - networking
-    - wg-quick
+    - wg
+    - wgquick
     - vpn
 
 dependencies: []
