@@ -1,0 +1,11 @@
+---
+# Gateway must have a valid configuration before we configure clients
+- hosts: wireguard_gateway
+  tasks:
+    - include_role:
+        name: ../ansible-role-wireguard
+
+- hosts: wireguard_clients
+  tasks:
+    - include_role:
+        name: ../ansible-role-wireguard

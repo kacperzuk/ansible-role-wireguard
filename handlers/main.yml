@@ -1,0 +1,11 @@
+---
+- name: restart wg-quick
+  service:
+    name: "wg-quick@{{ wireguard_interface }}"
+    state: restarted
+
+- name: restart gateway wg-quick
+  service:
+    name: "wg-quick@{{ wireguard_interface }}"
+    state: restarted
+  delegate_to: "{{ groups['wireguard_gateway'][0] }}"

@@ -1,0 +1,34 @@
+---
+- name: Enable IPv4 forwarding on Gateway
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: 12
+    reload: yes
+
+- name: Create WireGuard configuration file
+  ini_file:
+    path: "{{ wireguard_conf_dir }}/{{ wireguard_interface }}.conf"
+    owner: root
+    group: root
+    mode: 0600
+    section: "{{ item.section }}"
+    option: "{{ item.key }}"
+    value: "{{ item.value }}"
+  notify:
+    - restart wg-quick
+  with_items:
+    - section: Interface
+      key: Address
+      value: "{{ wireguard_address }}"
+    - section: Interface
+      key: ListenPort
+      value: "{{ wireguard_port }}"
+    - section: Interface
+      key: PrivateKey
+      value: "{{ wireguard_private_key }}"
+    - section: Interface
+      key: PostUp
+      value: "{{ wireguard_gateway_postup }}"
+    - section: Interface
+      key: PostDown
+      value: "{{ wireguard_gateway_postdown }}"

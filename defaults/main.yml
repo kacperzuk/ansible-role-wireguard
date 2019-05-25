@@ -1,0 +1,5 @@
+wireguard_conf_dir: "/etc/wireguard"
+wireguard_interface: "wg0"
+wireguard_port: "52622"
+wireguard_gateway_postup: "iptables -A FORWARD -i %i -j ACCEPT; iptables -A FORWARD -o %i -j ACCEPT; iptables -t nat -A POSTROUTING -o {{ hostvars[inventory_hostname].wireguard_forward_interface }} -j MASQUERADE"
+wireguard_gateway_postdown: "iptables -D FORWARD -i %i -j ACCEPT; iptables -D FORWARD -o %i -j ACCEPT; iptables -t nat -D POSTROUTING -o {{ hostvars[inventory_hostname].wireguard_forward_interface }} -j MASQUERADE"

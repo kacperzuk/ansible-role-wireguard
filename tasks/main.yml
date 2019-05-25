@@ -1,0 +1,55 @@
+---
+- include_tasks: "install-{{ ansible_distribution|lower }}.yml"
+
+- name: Register if config already exists
+  stat:
+    path: "{{ wireguard_conf_dir }}/{{ wireguard_interface }}.conf"
+  register: config_stat
+
+- name: Generate WireGuard private key
+  block:
+  - name: Generate WireGuard private key
+    command: wg genkey
+    register: wireguard_private_key_result
+  - name: Set private key fact
+    set_fact:
+      wireguard_private_key: "{{ wireguard_private_key_result.stdout }}"
+  when: not config_stat.stat.exists
+
+- name: Read WireGuard private key
+  block:
+  - name: Read WireGuard private key
+    shell: "grep PrivateKey {{ wireguard_conf_dir }}/{{ wireguard_interface }}.conf | awk '{ print $3 }'"
+    register: wireguard_private_key_result
+    changed_when: False
+  - name: Set private key fact
+    set_fact:
+      wireguard_private_key: "{{ wireguard_private_key_result.stdout }}"
+  when: config_stat.stat.exists
+
+- name: Generate WireGuard public key
+  shell: "echo '{{ wireguard_private_key }}' | wg pubkey"
+  register: wireguard_public_key_result
+  changed_when: False
+
+- name: Set public key fact
+  set_fact:
+    wireguard_public_key: "{{ wireguard_public_key_result.stdout }}"
+
+- name: Create WireGuard configuration directory
+  file:
+    dest: "{{ wireguard_conf_dir }}"
+    state: directory
+    mode: 0700
+
+- include_tasks: "configure-gateway.yml"
+  when: "'wireguard_gateway' in group_names"
+
+- include_tasks: "configure-clients.yml"
+  when: "'wireguard_clients' in group_names"
+
+- name: Start and enable WireGuard service
+  service:
+    name: "wg-quick@{{ wireguard_interface }}"
+    state: started
+    enabled: yes

@@ -1,0 +1,62 @@
+---
+- name: Get Gateway facts
+  setup:
+  delegate_to: "{{ groups['wireguard_gateway'][0] }}"
+  delegate_facts: True
+
+- name: Set fact with gateway details
+  set_fact:
+    wireguard_gateway_details: "{{ hostvars[groups['wireguard_gateway'][0]] }}"
+
+- name: Get Gateway Public Key
+  shell: "wg show {{ wireguard_gateway_details.get('wireguard_interface', wireguard_interface) }}  | grep public\\ key | awk '{ print $3 }'"
+  register: wireguard_gateway_public_key
+  changed_when: False
+  delegate_to: "{{ groups['wireguard_gateway'][0] }}"
+
+- name: Create WireGuard configuration file
+  ini_file:
+    path: "{{ wireguard_conf_dir }}/{{ wireguard_interface }}.conf"
+    owner: root
+    group: root
+    mode: 0600
+    section: "{{ item.section }}"
+    option: "{{ item.key }}"
+    value: "{{ item.value }}"
+  notify:
+    - restart wg-quick
+  with_items:
+    - section: Interface
+      key: Address
+      value: "{{ wireguard_address }}"
+    - section: Interface
+      key: ListenPort
+      value: "{{ wireguard_port }}"
+    - section: Interface
+      key: PrivateKey
+      value: "{{ wireguard_private_key }}"
+    - section: Peer
+      key: PublicKey
+      value: "{{ wireguard_gateway_public_key.stdout }}"
+    - section: Peer
+      key: Endpoint
+      value: "{{ wireguard_gateway_details['ansible_'+wireguard_gateway_details.wireguard_connect_interface].ipv4.address }}:\
+{{ wireguard_gateway_details.get('wireguard_port', wireguard_port) }}"
+    - section: Peer
+      key: AllowedIPs
+      value: "0.0.0.0/0"
+    - section: Peer
+      key: PersistentKeepalive
+      value: 30
+
+- name: Add Client to Gateway
+  blockinfile:
+    block: "{{ lookup('template', 'gateway_peer.j2') }}"
+    path: "{{ wireguard_conf_dir }}/{{ wireguard_interface }}.conf"
+    marker: "## {mark} Ansible peer {{ inventory_hostname }} ##"
+    owner: root
+    group: root
+    mode: 0600
+  notify:
+    - restart gateway wg-quick
+  delegate_to: "{{ groups['wireguard_gateway'][0] }}"

@@ -1,0 +1,22 @@
+---
+- name: Setup preference for Debian Unstable repo
+  copy:
+    src: debian-apt-preferences
+    dest: /etc/apt/preferences.d/limit-unstable
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Add Debian Unstable repo
+  apt_repository:
+    repo: "deb http://deb.debian.org/debian unstable main"
+    state: present
+    update_cache: yes
+
+- name: Install Wireguard & deps
+  apt:
+    name:
+      - "linux-headers-{{ ansible_kernel }}"
+      - wireguard-tools
+      - wireguard-dkms
+    state: present
