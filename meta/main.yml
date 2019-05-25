@@ -1,0 +1,17 @@
+galaxy_info:
+  author: Kacper Żuk
+  description: Ansible role for setting up WireGuard based VPN with gateway. Uses wg-quick and systemd.
+  license: BSD-3-Clause
+  min_ansible_version: 2.4
+  platforms:
+    - name: Debian
+      versions:
+      - stretch
+
+  galaxy_tags:
+    - wireguard
+    - networking
+    - wg-quick
+    - vpn
+
+dependencies: []
