@@ -79,6 +79,7 @@ Required groups:
 Gateway must be configured first. This can be achieved either by splitting the playbook in two parts like in Quick Start, or by running single playbook twice using `--limit` option. Tags may be supported in the future.
 
 Supported gateway vars:
+
 | Variable | Required | Default value | Description |
 |----------|----------|---------------|-------------|
 | `wireguard_address` | Required | N/A |Address that will be used for wireguard interface, for example: `10.0.0.1/24`|
@@ -91,6 +92,7 @@ Supported gateway vars:
 | `wireguard_conf_dir` | Optional | `/etc/wireguard` | Changing not supported |
 
 Supported clients vars:
+
 | Variable | Required | Default value | Description |
 |----------|----------|---------------|-------------|
 | `wireguard_address` | Required | N/A |Address that will be used for wireguard interface, for example: `10.0.0.1/24`|
