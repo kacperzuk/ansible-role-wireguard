@@ -25,7 +25,7 @@
 - name: Install Wireguard & deps
   apt:
     name:
-      - "linux-headers-{{ kernel_headers_version | default(ansible_kernel) }}"
+      - "{{ kernel_headers_package | default('linux-headers-'+ansible_kernel) }}"
       - wireguard-tools
       - wireguard-dkms
     state: present
