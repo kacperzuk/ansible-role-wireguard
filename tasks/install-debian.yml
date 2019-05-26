@@ -7,12 +7,6 @@
     group: root
     mode: 0644
 
-- name: Add Debian Unstable repo
-  apt_repository:
-    repo: "deb http://deb.debian.org/debian unstable main"
-    state: present
-    update_cache: yes
-
 - name: Add Debian Unstable key
   apt_key:
     keyserver: pgpkeys.mit.edu
@@ -21,6 +15,12 @@
   with_items:
     - 7638D0442B90D010
     - 04EE7237B7D453EC
+
+- name: Add Debian Unstable repo
+  apt_repository:
+    repo: "deb http://deb.debian.org/debian unstable main"
+    state: present
+    update_cache: yes
 
 - name: Install Wireguard & deps
   apt:

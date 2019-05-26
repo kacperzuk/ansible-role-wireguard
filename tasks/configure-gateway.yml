@@ -2,7 +2,7 @@
 - name: Enable IPv4 forwarding on Gateway
   sysctl:
     name: net.ipv4.ip_forward
-    value: 12
+    value: 1
     reload: yes
 
 - name: Create WireGuard configuration file
