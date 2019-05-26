@@ -22,10 +22,12 @@ This role keeps no state on controller, and only uses the /etc/wireguard/_interf
 Quick start
 -----------
 
-Assume you have 3 machines that have single interface `eth0` that can already ping each other:
+Assume you have 3 machines that have single interface `eth0`:
 * 192.168.0.1/24 that will be used as gateway
 * 192.168.0.2/24
 * 192.168.0.3/24
+
+192.168.0.2 and 192.168.0.3 must be able to connect to 192.168.0.1.
 
 Create inventory file:
 ```
