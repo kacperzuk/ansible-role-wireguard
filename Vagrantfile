@@ -1,16 +1,14 @@
 Vagrant.configure(2) do |config|
   config.vm.box = "debian/stretch64"
   config.vm.network "private_network", type: "dhcp"
-  config.ssh.insert_key = false
   config.vm.synced_folder '.', '/vagrant', disabled: true
 
   config.vm.provision "ansible" do |ansible|
     ansible.playbook = "configure-wg.yml"
-    ansible.limit = "all"
     ansible.become = true
     ansible.groups = {
       "wireguard_gateway" => [ "gateway" ],
-      "wireguard_clients" => [ "c1", "c2", "c3" ]
+      "wireguard_clients" => [ "c1", "c2" ]
     }
     ansible.host_vars = {
       "gateway" => {
@@ -27,7 +25,6 @@ Vagrant.configure(2) do |config|
       },
       "c1" => { "wireguard_address" => "10.222.222.11/24" },
       "c2" => { "wireguard_address" => "10.222.222.12/24" },
-      "c3" => { "wireguard_address" => "10.222.222.13/24" }
     }
   end
 
@@ -38,8 +35,5 @@ Vagrant.configure(2) do |config|
   end
 
   config.vm.define "c2" do |vm|
-  end
-
-  config.vm.define "c3" do |vm|
   end
 end
