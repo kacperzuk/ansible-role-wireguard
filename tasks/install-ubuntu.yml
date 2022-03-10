@@ -1,0 +1,16 @@
+---
+# From ubuntu 20.04 wireguard kernel deps is part of the distro
+# Only need to install the "wireguard" package
+# Should fail if ubuntu version is lower than 20.04
+# Something like this pseudo code, but how to compare a string  an decide if that is > or < than 20.04 ..... ?
+# Now it will just fail on package not available 
+# - name: Fail when Ubuntu version < 20.04
+#  fail: msg="Bailing out. Ubuntu 20.04 or higher is needed
+#  when: ansible_distribution_version < "20.04"
+
+- name: Install Wireguard & deps
+  apt:
+    update_cache: yes
+    name:
+      - wireguard
+    state: present
